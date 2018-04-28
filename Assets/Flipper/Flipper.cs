@@ -51,6 +51,11 @@ public class Flipper : MonoBehaviour
 		// negative motorSpeeds are counterclockwise
 
 		Vector3 newRotation = transform.localEulerAngles;
+
+		if (Input.GetKey(KeyCode.R))
+		{
+			Application.LoadLevel(Application.loadedLevel);
+		}
 		
 		if (Input.GetKeyDown(flipbutton))
 		{
