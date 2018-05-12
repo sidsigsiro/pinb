@@ -37,7 +37,7 @@ public class Flipper : MonoBehaviour
 		maxAngle = joint.limits.max;
 		minAngle = joint.limits.min;
 
-		direction = Mathf.Sign(maxAngle - minAngle) * 2000;
+		direction = Mathf.Sign(maxAngle - minAngle) * 1500;
 	}
 
 	void Update()
