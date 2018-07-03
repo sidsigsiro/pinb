@@ -20,6 +20,8 @@ public class Ball : MonoBehaviour
 	Transform[] balls;
 	CircleCollider2D[] colliders;
 	private Rigidbody2D[] rigidbodies;
+
+	Transform parent;
 	
 	// is arrow pressed?
 	bool arrowPressed;
@@ -28,7 +30,8 @@ public class Ball : MonoBehaviour
 	
 	// Use this for initialization
 	void Start()
-	{	
+	{
+		Transform parent = transform.parent;
 		Transform child = transform.GetChild(0);
 		balls = new []{ transform, child };
 		colliders = new []{ GetComponent<CircleCollider2D>(), child.GetComponent<CircleCollider2D>() };
@@ -54,7 +57,7 @@ public class Ball : MonoBehaviour
 			if (!wasPressed)
 			{
 				// enter slowmo
-				enableSlowMoBall();
+				setActiveBall(SLOW_MO);
 			}
 		}
 		else // if !arrowPressed
@@ -62,7 +65,7 @@ public class Ball : MonoBehaviour
 			if (wasPressed)
 			{
 				// exit slowmo
-				disableSlowMoBall();
+				setActiveBall(NORMAL);
 			}
 			
 			Vector2 force = Vector2.zero;
@@ -91,49 +94,40 @@ public class Ball : MonoBehaviour
 
 	// ---------- HELPER FUNCTIONS ----------
 	
-	void enableSlowMoBall()
+	void setActiveBall(int ball)
 	{
-		// slow mo
-		Time.timeScale = 0.15f;
+		ballMode = ball;
 		
-		colliders[NORMAL].enabled = false;
+		if (ball == SLOW_MO)
+		{
+			// slow mo
+			Time.timeScale = 0.15f;
+		}
+		else
+		{
+			// normal speed
+			Time.timeScale = 1;
+		}
 		
-		swapParentwithChild();
-		copyComponents(NORMAL, SLOW_MO);
+		setParent(ball);
 		
-		colliders[SLOW_MO].enabled = true;
-	}
-
-	void disableSlowMoBall()
-	{
-		// normal speed
-		Time.timeScale = 1;
-		
-		colliders[SLOW_MO].enabled = false;
-		
-		swapParentwithChild();
-		copyComponents(SLOW_MO, NORMAL);
-		
-		colliders[NORMAL].enabled = true;
+		switchComponents(1-ball, ball);
 	}
 	
 	// swap positions in the hierarchy
-	void swapParentwithChild()
+	void setParent(int ball)
 	{
-		// swap this object with its child
-		Transform child = transform.GetChild(0);
-		child.SetParent(transform.parent);
-		transform.SetParent(child);
+		balls[ball].parent = parent;
+		balls[1 - ball].parent = balls[ball]; // other ball
 	}
 
-	void copyComponents(int from, int to)
+	void switchComponents(int from, int to)
 	{
-		copyRigidbody(rigidbodies[from], rigidbodies[to]);
-		copyCircleCollider(colliders[from], colliders[to]);
+		switchRigidbody(rigidbodies[from], rigidbodies[to]);
+		switchCollider(colliders[from], colliders[to]);
 	}
 	
-	
-	void copyRigidbody(Rigidbody2D from, Rigidbody2D to)
+	void switchRigidbody(Rigidbody2D from, Rigidbody2D to)
 	{
 		to.angularDrag = from.angularDrag;
 		to.angularVelocity = from.angularVelocity;
@@ -146,13 +140,18 @@ public class Ball : MonoBehaviour
 		to.position = from.position;
 		to.rotation = from.rotation;
 		to.velocity = from.velocity;
+
+		from.simulated = false;
+		to.simulated = true;
 	}
 
-	void copyCircleCollider(CircleCollider2D from, CircleCollider2D to)
+	void switchCollider(CircleCollider2D from, CircleCollider2D to)
 	{
 		to.radius = from.radius;
-		to.density = from.density;
 		to.offset = from.offset;
 		to.sharedMaterial = from.sharedMaterial;
+
+		from.enabled = false;
+		to.enabled = true;
 	}
 }
