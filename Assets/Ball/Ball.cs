@@ -1,27 +1,38 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using JetBrains.Rider.Unity.Editor;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(Collider2D))]
 public class Ball : MonoBehaviour
-{	
+{
+	// ball modes
+	const int NORMAL = 0, SLOW_MO = 1;
+	
+	int ballMode = NORMAL;
+	
+	// store this object and child object's transform, collider, and rigidbody
 	Transform[] balls;
-	Collider2D[] colliders;
+	CircleCollider2D[] colliders;
 	private Rigidbody2D[] rigidbodies;
+	
+	// is arrow pressed?
 	bool arrowPressed;
+	
+	// ---------- UNITY FUNCTIONS ----------
 	
 	// Use this for initialization
 	void Start()
 	{	
 		Transform child = transform.GetChild(0);
-		balls = new Transform[] { transform, child };
-		colliders = new Collider2D[]{ GetComponent<Collider2D>(), child.GetComponent<Collider2D>() };
-		rigidbodies = new Rigidbody2D[] { GetComponent<Rigidbody2D>(), child.GetComponent<Rigidbody2D>() };
+		balls = new []{ transform, child };
+		colliders = new []{ GetComponent<CircleCollider2D>(), child.GetComponent<CircleCollider2D>() };
+		rigidbodies = new []{ GetComponent<Rigidbody2D>(), child.GetComponent<Rigidbody2D>() };
 		
 		arrowPressed = false;
 	}
@@ -51,7 +62,7 @@ public class Ball : MonoBehaviour
 			if (wasPressed)
 			{
 				// exit slowmo
-				Time.timeScale = 1;
+				disableSlowMoBall();
 			}
 			
 			Vector2 force = Vector2.zero;
@@ -73,20 +84,75 @@ public class Ball : MonoBehaviour
 				force += Vector2.down;
 			}
 			
-			rigidbody.AddForce(force.normalized, ForceMode2D.Impulse);
+			rigidbodies[ballMode].AddForce(force.normalized, ForceMode2D.Impulse);
 		}
 	}
+	
 
+	// ---------- HELPER FUNCTIONS ----------
+	
 	void enableSlowMoBall()
 	{
 		// slow mo
 		Time.timeScale = 0.15f;
 		
-		collider.enabled = false;
+		colliders[NORMAL].enabled = false;
 		
+		swapParentwithChild();
+		copyComponents(NORMAL, SLOW_MO);
+		
+		colliders[SLOW_MO].enabled = true;
+	}
+
+	void disableSlowMoBall()
+	{
+		// normal speed
+		Time.timeScale = 1;
+		
+		colliders[SLOW_MO].enabled = false;
+		
+		swapParentwithChild();
+		copyComponents(SLOW_MO, NORMAL);
+		
+		colliders[NORMAL].enabled = true;
+	}
+	
+	// swap positions in the hierarchy
+	void swapParentwithChild()
+	{
 		// swap this object with its child
 		Transform child = transform.GetChild(0);
 		child.SetParent(transform.parent);
 		transform.SetParent(child);
+	}
+
+	void copyComponents(int from, int to)
+	{
+		copyRigidbody(rigidbodies[from], rigidbodies[to]);
+		copyCircleCollider(colliders[from], colliders[to]);
+	}
+	
+	
+	void copyRigidbody(Rigidbody2D from, Rigidbody2D to)
+	{
+		to.angularDrag = from.angularDrag;
+		to.angularVelocity = from.angularVelocity;
+		to.drag = from.drag;
+		to.freezeRotation = from.freezeRotation;
+		to.gravityScale = from.gravityScale;
+		to.inertia = from.inertia;
+		to.isKinematic = from.isKinematic;
+		to.mass = from.mass;
+		to.position = from.position;
+		to.rotation = from.rotation;
+		to.velocity = from.velocity;
+	}
+
+	void copyCircleCollider(CircleCollider2D from, CircleCollider2D to)
+	{
+		to.radius = from.radius;
+		to.density = from.density;
+		to.offset = from.offset;
+		to.sharedMaterial = from.sharedMaterial;
 	}
 }
