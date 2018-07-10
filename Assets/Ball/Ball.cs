@@ -11,17 +11,14 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Ball : MonoBehaviour
 {
-	// ball modes
-	const int NORMAL = 0, SLOW_MO = 1;
+	// constants
+	static float NORMAL_TIME_SCALE;
+	static float NORMAL_FIXED_TIME;
+	static float SLOW_MO_TIME_SCALE;
+	static float SLOW_MO_FIXED_TIME;
 	
-	int ballMode = NORMAL;
-	
-	// store this object and child object's transform, collider, and rigidbody
-	Transform[] balls;
-	CircleCollider2D[] colliders;
-	private Rigidbody2D[] rigidbodies;
-
-	Transform parent;
+	// store this object collider, and rigidbody
+	new Rigidbody2D rigidbody;
 	
 	// is arrow pressed?
 	bool arrowPressed;
@@ -31,11 +28,19 @@ public class Ball : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-		Transform parent = transform.parent;
-		Transform child = transform.GetChild(0);
-		balls = new []{ transform, child };
-		colliders = new []{ GetComponent<CircleCollider2D>(), child.GetComponent<CircleCollider2D>() };
-		rigidbodies = new []{ GetComponent<Rigidbody2D>(), child.GetComponent<Rigidbody2D>() };
+		// assign the constants
+		if (NORMAL_TIME_SCALE == 0)
+		{
+			// fraction of normal speed
+			const float fraction = 3f/20f;
+			
+			NORMAL_TIME_SCALE = Time.timeScale;
+			NORMAL_FIXED_TIME = Time.fixedDeltaTime;
+			SLOW_MO_TIME_SCALE = NORMAL_TIME_SCALE * fraction;
+			SLOW_MO_FIXED_TIME = NORMAL_FIXED_TIME * fraction;
+		}
+
+		rigidbody = GetComponent<Rigidbody2D>();
 		
 		arrowPressed = false;
 	}
@@ -57,7 +62,8 @@ public class Ball : MonoBehaviour
 			if (!wasPressed)
 			{
 				// enter slowmo
-				setActiveBall(SLOW_MO);
+				setSlowMo(true);
+				// setActiveBall(SLOW_MO);
 			}
 		}
 		else // if !arrowPressed
@@ -65,7 +71,8 @@ public class Ball : MonoBehaviour
 			if (wasPressed)
 			{
 				// exit slowmo
-				setActiveBall(NORMAL);
+				setSlowMo(false);
+				// setActiveBall(NORMAL);
 			}
 			
 			Vector2 force = Vector2.zero;
@@ -87,71 +94,24 @@ public class Ball : MonoBehaviour
 				force += Vector2.down;
 			}
 			
-			rigidbodies[ballMode].AddForce(force.normalized, ForceMode2D.Impulse);
+			rigidbody.AddForce(force.normalized, ForceMode2D.Impulse);
 		}
 	}
 	
 
 	// ---------- HELPER FUNCTIONS ----------
-	
-	void setActiveBall(int ball)
+
+	void setSlowMo(bool on)
 	{
-		ballMode = ball;
-		
-		if (ball == SLOW_MO)
+		if (on)
 		{
-			// slow mo
-			Time.timeScale = 0.15f;
+			Time.timeScale = SLOW_MO_TIME_SCALE;
+			Time.fixedDeltaTime = SLOW_MO_FIXED_TIME;
 		}
 		else
 		{
-			// normal speed
-			Time.timeScale = 1;
+			Time.timeScale = NORMAL_TIME_SCALE;
+			Time.fixedDeltaTime = NORMAL_FIXED_TIME;
 		}
-		
-		setParent(ball);
-		
-		switchComponents(1-ball, ball);
-	}
-	
-	// swap positions in the hierarchy
-	void setParent(int ball)
-	{
-		balls[ball].parent = parent;
-		balls[1 - ball].parent = balls[ball]; // other ball
-	}
-
-	void switchComponents(int from, int to)
-	{
-		switchRigidbody(rigidbodies[from], rigidbodies[to]);
-		switchCollider(colliders[from], colliders[to]);
-	}
-	
-	void switchRigidbody(Rigidbody2D from, Rigidbody2D to)
-	{
-		to.angularDrag = from.angularDrag;
-		to.angularVelocity = from.angularVelocity;
-		to.drag = from.drag;
-		to.freezeRotation = from.freezeRotation;
-		to.gravityScale = from.gravityScale;
-		to.inertia = from.inertia;
-		to.isKinematic = from.isKinematic;
-		to.mass = from.mass;
-		to.position = from.position;
-		to.rotation = from.rotation;
-		to.velocity = from.velocity;
-
-		from.simulated = false;
-		to.simulated = true;
-	}
-
-	void switchCollider(CircleCollider2D from, CircleCollider2D to)
-	{
-		to.radius = from.radius;
-		to.offset = from.offset;
-		to.sharedMaterial = from.sharedMaterial;
-
-		from.enabled = false;
-		to.enabled = true;
 	}
 }
