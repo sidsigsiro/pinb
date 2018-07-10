@@ -7,14 +7,13 @@ public class Flipper : MonoBehaviour
 {
 	public enum FlipType
 	{
-		left, right
+		left = KeyCode.Q, right = KeyCode.E
 	}
 	public FlipType fliptype;
 		
 	float maxAngle;
 	private float minAngle;
 	private float direction;
-	KeyCode flipbutton;
 	
 	private HingeJoint2D joint;
 	private new Rigidbody2D rigidbody;
@@ -22,15 +21,6 @@ public class Flipper : MonoBehaviour
 	// Use this for initialization
 	private void Start ()
 	{
-		if (fliptype == FlipType.left)
-		{
-			flipbutton = KeyCode.Q;
-		}
-		else
-		{
-			flipbutton = KeyCode.E;
-		}
-	
 		joint = GetComponent<HingeJoint2D>();
 		rigidbody = GetComponent<Rigidbody2D>();
 
@@ -57,12 +47,12 @@ public class Flipper : MonoBehaviour
 			Application.LoadLevel(Application.loadedLevel);
 		}
 		
-		if (Input.GetKeyDown(flipbutton))
+		if (Input.GetKeyDown((KeyCode)fliptype))
 		{
 			// start at minAngle
 			newRotation.z = minAngle;
 		}
-		else if (Input.GetKeyUp(flipbutton))
+		else if (Input.GetKeyUp((KeyCode)fliptype))
 		{
 			// start at maxAngle
 			newRotation.z = maxAngle;
@@ -70,7 +60,7 @@ public class Flipper : MonoBehaviour
 		
 		transform.localEulerAngles = newRotation;
 		
-		if (Input.GetKey(flipbutton))
+		if (Input.GetKey((KeyCode)fliptype))
 		{
 			motor.motorSpeed = direction;
 			
