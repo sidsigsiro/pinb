@@ -37,5 +37,7 @@ namespace TypeSafety {
         public const int UI = 32;
         
         public const int Bumper = 256;
+        
+        public const int Ball = 512;
     }
 }

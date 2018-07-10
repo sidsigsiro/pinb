@@ -21,9 +21,6 @@ public class Bumper : MonoBehaviour {
 
 		Rigidbody2D otherBody = other.gameObject.GetComponent<Rigidbody2D>();
 
-		if (otherBody != null)
-		{
-			otherBody.AddForce(averageNormals, ForceMode2D.Impulse);
-		}
+		otherBody.AddForce(averageNormals, ForceMode2D.Impulse);
 	}
 }

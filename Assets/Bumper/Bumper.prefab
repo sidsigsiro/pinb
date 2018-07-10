@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212133112411785032}
   - component: {fileID: 61855700723055748}
   - component: {fileID: 114790321453727984}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bumper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
