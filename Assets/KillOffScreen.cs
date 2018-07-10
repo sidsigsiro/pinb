@@ -4,18 +4,31 @@ using UnityEngine;
 
 public class KillOffScreen : MonoBehaviour
 {
-	private SpriteRenderer _renderer;
-	private int nonVisibleCount;
+	new SpriteRenderer renderer;
+	new Rigidbody2D rigidbody;
+
+	Vector3 startPos;
+	
+	int nonVisibleCount;
 	
 	void Start ()
 	{
-		_renderer = GetComponent<SpriteRenderer>();
+		startPos = transform.position;
+		
+		renderer = GetComponent<SpriteRenderer>();
+		rigidbody = GetComponent<Rigidbody2D>();
 	}
 	
 	void Update () {
-		if (!_renderer.isVisible)
+		if (!renderer.isVisible)
 		{
-			transform.position = new Vector3(0, 0, 0);
+			transform.position = startPos;
+			
+			if (rigidbody != null)
+			{
+				rigidbody.velocity = Vector2.zero;
+				rigidbody.angularVelocity = 0;
+			}
 		}
 	}
 }
