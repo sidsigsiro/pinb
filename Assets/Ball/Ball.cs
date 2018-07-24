@@ -67,8 +67,6 @@ public class Ball : MonoBehaviour
 				lastFrameHeld = Time.frameCount; // stores this frame's number
 			}
 		}
-
-		print(Time.frameCount);
 		
 		// arrow key was pressed this frame
 		if (lastFrameHeld == Time.frameCount)
@@ -87,8 +85,6 @@ public class Ball : MonoBehaviour
 			{
 				if (arrow.framePressed >= Time.frameCount - FRAME_TOLERANCE)
 				{
-					print(arrow.key + ": " + arrow.framePressed);
-					
 					force += arrow.dir;
 				}
 			}
