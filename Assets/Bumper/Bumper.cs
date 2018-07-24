@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
 [RequireComponent(typeof(Collider2D))]
 public class Bumper : MonoBehaviour {
 
@@ -22,5 +23,7 @@ public class Bumper : MonoBehaviour {
 		Rigidbody2D otherBody = other.gameObject.GetComponent<Rigidbody2D>();
 
 		otherBody.AddForce(averageNormals, ForceMode2D.Impulse);
+		
+		print("hi");
 	}
 }

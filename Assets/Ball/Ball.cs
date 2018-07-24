@@ -1,27 +1,30 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using JetBrains.Rider.Unity.Editor;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.Networking;
+using UnityEngine.Experimental.UIElements;
 
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class Ball : MonoBehaviour
 {
 	// constants
+	
 	static float NORMAL_TIME_SCALE;
 	static float NORMAL_FIXED_TIME;
 	static float SLOW_MO_TIME_SCALE;
 	static float SLOW_MO_FIXED_TIME;
+	// how many frames after releasing the arrow key does the ball fly?
+	const int FRAME_TOLERANCE = 6;
 	
 	// store this object collider, and rigidbody
 	new Rigidbody2D rigidbody;
 	
-	// is arrow pressed?
-	bool arrowPressed;
+	// last frame during which an arrow key was pressed
+	int lastFrameHeld;
+
+	// dictionary containing the number of the last frame an arrow key was pressed
+	private Dictionary<KeyCode, ArrowKeyData> keyData;
 	
 	// ---------- UNITY FUNCTIONS ----------
 	
@@ -39,59 +42,51 @@ public class Ball : MonoBehaviour
 			SLOW_MO_TIME_SCALE = NORMAL_TIME_SCALE * fraction;
 			SLOW_MO_FIXED_TIME = NORMAL_FIXED_TIME * fraction;
 		}
+		
+		// initialize
+		keyData = new Dictionary<KeyCode, ArrowKeyData>();
+		keyData[KeyCode.LeftArrow] = new ArrowKeyData(KeyCode.LeftArrow, Vector2.left);
+		keyData[KeyCode.RightArrow] = new ArrowKeyData(KeyCode.RightArrow, Vector2.right);
+		keyData[KeyCode.UpArrow] = new ArrowKeyData(KeyCode.UpArrow, Vector2.up);
+		keyData[KeyCode.DownArrow] = new ArrowKeyData(KeyCode.DownArrow, Vector2.down);
 
 		rigidbody = GetComponent<Rigidbody2D>();
 		
-		arrowPressed = false;
+		lastFrameHeld = 0;
 	}
 	
 	// Update is called once per frame
 	void Update ()
-	{
-		// save value from last frame
-		bool wasPressed = arrowPressed;
-		
-		// true if any arrow keys is currently held
-		arrowPressed = Input.GetKey(KeyCode.LeftArrow)
-		                    || Input.GetKey(KeyCode.RightArrow)
-		                    || Input.GetKey(KeyCode.UpArrow)
-		                    || Input.GetKey(KeyCode.DownArrow);
-		
-		if (arrowPressed)
+	{		
+		foreach (ArrowKeyData arrow in keyData.Values)
 		{
-			if (!wasPressed)
+			// if the key is pressed
+			if (Input.GetKey(arrow.key))
 			{
-				// enter slowmo
-				setSlowMo(true);
-				// setActiveBall(SLOW_MO);
+				arrow.framePressed = Time.frameCount;
+				lastFrameHeld = Time.frameCount; // stores this frame's number
 			}
 		}
-		else // if !arrowPressed
+		
+		// arrow key was pressed this frame
+		if (lastFrameHeld == Time.frameCount)
 		{
-			if (wasPressed)
-			{
-				// exit slowmo
-				setSlowMo(false);
-				// setActiveBall(NORMAL);
-			}
+			// enter slowmo
+			setSlowMo(true);
+		}
+		else if (lastFrameHeld == Time.frameCount - 1) // 1 frame ago
+		{
+			// exit slowmo
+			setSlowMo(false);
 			
 			Vector2 force = Vector2.zero;
-			
-			if (Input.GetKeyUp(KeyCode.LeftArrow))
+
+			foreach (ArrowKeyData arrow in keyData.Values)
 			{
-				force += Vector2.left;
-			}
-			else if (Input.GetKeyUp(KeyCode.RightArrow))
-			{
-				force += Vector2.right;
-			}
-			else if (Input.GetKeyUp(KeyCode.UpArrow))
-			{
-				force += Vector2.up;
-			}
-			else if (Input.GetKeyUp(KeyCode.DownArrow))
-			{
-				force += Vector2.down;
+				if (arrow.framePressed >= Time.frameCount - FRAME_TOLERANCE)
+				{
+					force += arrow.dir;
+				}
 			}
 			
 			rigidbody.AddForce(force.normalized, ForceMode2D.Impulse);
