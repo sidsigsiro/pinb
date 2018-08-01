@@ -1,0 +1,55 @@
+
+NoNumberTest.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Background_ball_capture_enemy/Arm_cover
+  rotate: false
+  xy: 244, 1
+  size: 58, 122
+  orig: 58, 122
+  offset: 0, 0
+  index: -1
+Background_ball_capture_enemy/Hand
+  rotate: false
+  xy: 1, 402
+  size: 99, 51
+  orig: 99, 51
+  offset: 0, 0
+  index: -1
+Background_ball_capture_enemy/left_eye
+  rotate: false
+  xy: 1, 455
+  size: 10, 8
+  orig: 10, 8
+  offset: 0, 0
+  index: -1
+Background_ball_capture_enemy/right_eye
+  rotate: false
+  xy: 1, 465
+  size: 9, 8
+  orig: 9, 8
+  offset: 0, 0
+  index: -1
+Background_ball_capture_enemy/eyewhite_two
+  rotate: false
+  xy: 1, 475
+  size: 9, 5
+  orig: 9, 5
+  offset: 0, 0
+  index: -1
+Background_ball_capture_enemy/eyewhite_one
+  rotate: false
+  xy: 1, 482
+  size: 9, 4
+  orig: 9, 4
+  offset: 0, 0
+  index: -1
+Background_ball_capture_enemy/Body
+  rotate: false
+  xy: 1, 1
+  size: 241, 399
+  orig: 241, 399
+  offset: 0, 0
+  index: -1
