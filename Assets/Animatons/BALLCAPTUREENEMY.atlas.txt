@@ -1,0 +1,76 @@
+
+BALLCAPTUREENEMY.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Ball_Catch_Enemy/tail
+  rotate: false
+  xy: 323, 328
+  size: 270, 148
+  orig: 270, 148
+  offset: 0, 0
+  index: -1
+Ball_Catch_Enemy/foot_four
+  rotate: false
+  xy: 1, 392
+  size: 127, 98
+  orig: 127, 98
+  offset: 0, 0
+  index: -1
+Ball_Catch_Enemy/foot_three
+  rotate: false
+  xy: 130, 392
+  size: 101, 96
+  orig: 101, 96
+  offset: 0, 0
+  index: -1
+Ball_Catch_Enemy/foot_two
+  rotate: false
+  xy: 595, 405
+  size: 96, 85
+  orig: 96, 85
+  offset: 0, 0
+  index: -1
+Ball_Catch_Enemy/foot_one
+  rotate: false
+  xy: 233, 392
+  size: 67, 119
+  orig: 67, 119
+  offset: 0, 0
+  index: -1
+Ball_Catch_Enemy/wing_left
+  rotate: false
+  xy: 323, 1
+  size: 184, 325
+  orig: 184, 325
+  offset: 0, 0
+  index: -1
+Ball_Catch_Enemy/wing_right
+  rotate: false
+  xy: 595, 213
+  size: 121, 190
+  orig: 121, 190
+  offset: 0, 0
+  index: -1
+Ball_Catch_Enemy/antenna_left
+  rotate: false
+  xy: 712, 1
+  size: 35, 175
+  orig: 35, 175
+  offset: 0, 0
+  index: -1
+Ball_Catch_Enemy/antenna_right
+  rotate: false
+  xy: 509, 1
+  size: 201, 210
+  orig: 201, 210
+  offset: 0, 0
+  index: -1
+Ball_Catch_Enemy/Body
+  rotate: false
+  xy: 1, 1
+  size: 320, 389
+  orig: 320, 389
+  offset: 0, 0
+  index: -1
