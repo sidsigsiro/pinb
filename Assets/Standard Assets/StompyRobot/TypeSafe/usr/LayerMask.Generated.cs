@@ -39,5 +39,7 @@ namespace TypeSafety {
         public const int Bumper = 256;
         
         public const int Ball = 512;
+        
+        public const int Spine = 1024;
     }
 }

@@ -90,7 +90,7 @@ public class Ball : MonoBehaviour
 				}
 			}
 
-            float magnitude = Mathf.Max(8, rigidbody.velocity.magnitude);
+            float magnitude = Mathf.Max(9, rigidbody.velocity.magnitude);
 
             rigidbody.velocity = force.normalized * magnitude;
 		}
