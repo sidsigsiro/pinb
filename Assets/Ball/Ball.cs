@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+using Layers = TypeSafety.Layers;
 
 [RequireComponent(typeof(CircleCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
@@ -56,7 +57,7 @@ public class Ball : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update ()
+    void Update ()
 	{		
 		foreach (ArrowKeyData arrow in keyData.Values)
 		{
@@ -88,15 +89,17 @@ public class Ball : MonoBehaviour
 					force += arrow.dir;
 				}
 			}
-			
-			rigidbody.AddForce(force.normalized, ForceMode2D.Impulse);
+
+            float magnitude = Mathf.Max(8, rigidbody.velocity.magnitude);
+
+            rigidbody.velocity = force.normalized * magnitude;
 		}
 	}
-	
 
-	// ---------- HELPER FUNCTIONS ----------
 
-	void setSlowMo(bool on)
+    // ---------- HELPER FUNCTIONS ----------
+
+    void setSlowMo(bool on)
 	{
 		if (on)
 		{
