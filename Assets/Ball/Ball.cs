@@ -10,13 +10,13 @@ using Layers = TypeSafety.Layers;
 public class Ball : MonoBehaviour
 {
 	// constants
-	
 	static float NORMAL_TIME_SCALE;
 	static float NORMAL_FIXED_TIME;
 	static float SLOW_MO_TIME_SCALE;
 	static float SLOW_MO_FIXED_TIME;
 	// how many frames after releasing the arrow key does the ball fly?
 	const int FRAME_TOLERANCE = 6;
+	private const int NUM_JUMPS = 1;
 	
 	// store this object collider, and rigidbody
 	new Rigidbody2D rigidbody;
@@ -26,6 +26,8 @@ public class Ball : MonoBehaviour
 
 	// dictionary containing the number of the last frame an arrow key was pressed
 	private Dictionary<KeyCode, ArrowKeyData> keyData;
+
+	int jumpsRemaining;
 	
 	// ---------- UNITY FUNCTIONS ----------
 	
@@ -54,6 +56,7 @@ public class Ball : MonoBehaviour
 		rigidbody = GetComponent<Rigidbody2D>();
 		
 		lastFrameHeld = 0;
+		jumpsRemaining = NUM_JUMPS;
 	}
 	
 	// Update is called once per frame
@@ -68,36 +71,37 @@ public class Ball : MonoBehaviour
 				lastFrameHeld = Time.frameCount; // stores this frame's number
 			}
 		}
-		
-		// arrow key was pressed this frame
-		if (lastFrameHeld == Time.frameCount)
-		{
-			// enter slowmo
-			setSlowMo(true);
-		}
-		else if (lastFrameHeld == Time.frameCount - 1) // 1 frame ago
-		{
-			// exit slowmo
-			setSlowMo(false);
-			
-			Vector2 force = Vector2.zero;
 
-			foreach (ArrowKeyData arrow in keyData.Values)
+		// can jump
+		if (jumpsRemaining > 0)
+		{
+			// arrow key was pressed this frame
+			if (lastFrameHeld == Time.frameCount)
 			{
-				if (arrow.framePressed >= Time.frameCount - FRAME_TOLERANCE)
-				{
-					force += arrow.dir;
-				}
+				// enter slowmo
+				setSlowMo(true);
 			}
+			else if (lastFrameHeld == Time.frameCount - 1) // 1 frame ago
+			{
+				// exit slowmo
+				setSlowMo(false);
 
-            float magnitude = Mathf.Max(9, rigidbody.velocity.magnitude);
+				applyForce();
 
-            rigidbody.velocity = force.normalized * magnitude;
+				jumpsRemaining--;
+			}
 		}
 	}
 
+	void OnCollisionEnter2D(Collision2D other)
+	{
+		if (other.gameObject.layer == Layers.Flipper)
+		{
+			jumpsRemaining = NUM_JUMPS;
+		}
+	}
 
-    // ---------- HELPER FUNCTIONS ----------
+	// ---------- HELPER FUNCTIONS ----------
 
     void setSlowMo(bool on)
 	{
@@ -111,5 +115,22 @@ public class Ball : MonoBehaviour
 			Time.timeScale = NORMAL_TIME_SCALE;
 			Time.fixedDeltaTime = NORMAL_FIXED_TIME;
 		}
+	}
+
+	void applyForce()
+	{
+		Vector2 force = Vector2.zero;
+
+		foreach (ArrowKeyData arrow in keyData.Values)
+		{
+			if (arrow.framePressed >= Time.frameCount - FRAME_TOLERANCE)
+			{
+				force += arrow.dir;
+			}
+		}
+
+		float magnitude = Mathf.Max(9, rigidbody.velocity.magnitude);
+
+		rigidbody.velocity = force.normalized * magnitude;
 	}
 }

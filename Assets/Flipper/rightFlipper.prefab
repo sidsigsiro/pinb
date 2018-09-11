@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 50992413663523536}
   - component: {fileID: 233482933687559554}
   - component: {fileID: 114687097252657502}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: rightFlipper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ PolygonCollider2D:
   m_GameObject: {fileID: 1258470396610844}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: aab74e92987ec495ba10680e98bbf2dc, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -173,7 +173,7 @@ HingeJoint2D:
   m_UseMotor: 1
   m_Motor:
     m_MotorSpeed: 0
-    m_MaximumMotorForce: 10000
+    m_MaximumMotorForce: 20000
   m_UseLimits: 1
   m_AngleLimits:
     m_LowerAngle: 0

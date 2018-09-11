@@ -87,4 +87,9 @@ public class Flipper : MonoBehaviour
 		
 		joint.motor = motor;
 	}
+
+	void OnCollisionEnter2D(Collision2D other)
+	{
+		
+	}
 }

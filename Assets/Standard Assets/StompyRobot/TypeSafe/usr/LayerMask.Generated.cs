@@ -41,5 +41,7 @@ namespace TypeSafety {
         public const int Ball = 512;
         
         public const int Spine = 1024;
+        
+        public const int Flipper = 2048;
     }
 }
