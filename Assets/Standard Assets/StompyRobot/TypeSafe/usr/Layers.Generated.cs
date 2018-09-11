@@ -64,6 +64,12 @@ namespace TypeSafety {
             }
         }
         
+        public static global::TypeSafe.Layer Spine {
+            get {
+                return __all[7];
+            }
+        }
+        
         private static global::System.Collections.Generic.IList<global::TypeSafe.Layer> __all = new global::System.Collections.ObjectModel.ReadOnlyCollection<global::TypeSafe.Layer>(new global::TypeSafe.Layer[] {
                     new global::TypeSafe.Layer("Default", 0),
                     new global::TypeSafe.Layer("TransparentFX", 1),
@@ -71,7 +77,8 @@ namespace TypeSafety {
                     new global::TypeSafe.Layer("Water", 4),
                     new global::TypeSafe.Layer("UI", 5),
                     new global::TypeSafe.Layer("Bumper", 8),
-                    new global::TypeSafe.Layer("Ball", 9)});
+                    new global::TypeSafe.Layer("Ball", 9),
+                    new global::TypeSafe.Layer("Spine", 10)});
         
         public static global::System.Collections.Generic.IList<global::TypeSafe.Layer> All {
             get {
