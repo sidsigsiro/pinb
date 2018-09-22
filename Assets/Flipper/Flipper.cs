@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using TypeSafety;
 using UnityEngine;
-using UnityEngine.UI;
+using Input = UnityEngine.Input;
 
 public class Flipper : MonoBehaviour
 {
@@ -28,10 +30,6 @@ public class Flipper : MonoBehaviour
 		minAngle = joint.limits.min;
 
 		direction = Mathf.Sign(maxAngle - minAngle) * 1500;
-	}
-
-	void Update()
-	{
 	}
 
 	private void FixedUpdate () {
@@ -84,12 +82,22 @@ public class Flipper : MonoBehaviour
 		// assign newRotation AGAIN
 		transform.localEulerAngles = newRotation;
 		
-		
 		joint.motor = motor;
 	}
 
-	void OnCollisionEnter2D(Collision2D other)
+	void OnCollisionEnter2D(Collision2D other) { handleCollision(other); }
+	void OnCollisionStay2D(Collision2D other) { handleCollision(other);	}
+	void OnCollisionExit2D(Collision2D other) { handleCollision(other);	}
+
+	void handleCollision(Collision2D other)
 	{
+		print(name + ".angularVelocity == " + rigidbody.angularVelocity);
 		
+		if (direction * rigidbody.angularVelocity > 0 // direction is same as angular velocity
+		    && Mathf.Abs(rigidbody.angularVelocity) > 0.1
+		    && other.gameObject.layer == Layers.Ball)
+		{
+			other.gameObject.GetComponent<Ball>().refillDash();
+		}
 	}
 }

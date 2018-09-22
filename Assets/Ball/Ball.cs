@@ -29,6 +29,13 @@ public class Ball : MonoBehaviour
 
 	int jumpsRemaining;
 	
+	// ---------- PUBLIC ----------
+
+	public void refillDash()
+	{
+		jumpsRemaining = NUM_JUMPS;
+	}
+	
 	// ---------- UNITY FUNCTIONS ----------
 	
 	// Use this for initialization
@@ -90,14 +97,6 @@ public class Ball : MonoBehaviour
 
 				jumpsRemaining--;
 			}
-		}
-	}
-
-	void OnCollisionEnter2D(Collision2D other)
-	{
-		if (other.gameObject.layer == Layers.Flipper)
-		{
-			jumpsRemaining = NUM_JUMPS;
 		}
 	}
 
